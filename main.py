@@ -23,7 +23,7 @@ DEV_URL = os.environ.get("DEV_URL")
 Support = os.environ.get("Support")  
 
 # -------------------- TELEGRAM --------------------
-last_sent_time = 0  # Last Telegram send time
+last_sent_time = 0
 
 def send_to_telegram(text):
     global last_sent_time
@@ -46,7 +46,6 @@ def send_to_telegram(text):
         "reply_markup": json.dumps(buttons)
     }
 
-    # Delay to avoid hitting flood limits
     now = time.time()
     if now - last_sent_time < 1.2:
         time.sleep(1.2 - (now - last_sent_time))
@@ -57,12 +56,11 @@ def send_to_telegram(text):
             data=payload
         )
 
-        # Retry on Telegram flood control (429)
         if response.status_code == 429:
             retry_after = response.json().get("parameters", {}).get("retry_after", 1)
             print(f"⚠️ Rate limit hit — retrying after {retry_after} sec")
             time.sleep(retry_after)
-            return send_to_telegram(text)  # retry same message
+            return send_to_telegram(text)
 
         if response.status_code != 200:
             print("⚠️ Telegram Error:", response.text)
@@ -123,19 +121,24 @@ def on_message(ws, message):
                 otp_match = re.search(r'\b\d{3}[- ]?\d{3}\b|\b\d{6}\b', raw_msg)
                 otp = otp_match.group(0) if otp_match else "N/A"
 
-                formatted_number = recipient[:-4].replace(recipient[:-4], '⁕' * (len(recipient[:-4]))) + recipient[-4:]
+                masked_number = recipient[:-4].replace(recipient[:-4], '⁕' * (len(recipient[:-4]))) + recipient[-4:]
                 now = datetime.now().strftime("%H:%M:%S")
+                service = originator  # keeping your naming consistent
 
                 telegram_msg = (
-                    "📩 <b><u>OTP Notification</u></b>\n"
+                    "🔔 <b><u>Real-Time OTP Alert</u></b>\n"
                     "━━━━━━━━━━━━━━━━━━━━\n"
-                    f"🌍 <b>Country:</b> <code>{country}</code>\n"
-                    f"🔑 <b>OTP:</b> <code>{otp}</code>\n"
-                    f"🕒 <b>Time:</b> <code>{now}</code>\n"
-                    f"⚙️ <b>Service:</b> <code>{originator}</code>\n"
-                    f"📱 <b>Number:</b> <code>{recipient[:5]}{formatted_number}</code>\n"
+                    f"🌐 <b>Country:</b> <code>{country}</code>\n"
+                    f"🪪 <b>Originator:</b> <code>{originator}</code>\n"
+                    f"🔢 <b>OTP Code:</b> <code>{otp}</code>\n"
+                    f"⏰ <b>Received At:</b> <code>{now}</code>\n"
+                    f"📱 <b>Recipient:</b> <code>{masked_number}</code>\n"
+                    f"⚙️ <b>Service:</b> <code>{service}</code>\n"
                     "━━━━━━━━━━━━━━━━━━━━\n"
-                    f"💬 <b>Message:</b>\n<code>{html.escape(raw_msg)}</code>"
+                    "📝 <b>Full Message:</b>\n"
+                    f"<code>{html.escape(raw_msg)}</code>\n"
+                    "━━━━━━━━━━━━━━━━━━━━\n"
+                    "📡 <i>Sponser by Hridaym(H2I) Secure OTP Platform</i>"
                 )
 
                 send_to_telegram(telegram_msg)
@@ -154,7 +157,7 @@ def on_close(ws, code, msg):
     start_pinging = False
     print("🔌 WebSocket closed. Reconnecting in 1s...")
     time.sleep(1)
-    start_ws_thread()  # reconnect
+    start_ws_thread()
 
 def connect():
     print("🔄 Connecting to IVASMS WebSocket...")
