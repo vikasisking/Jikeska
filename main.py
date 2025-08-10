@@ -9,24 +9,20 @@ import os
 from flask import Flask, Response
 
 # -------------------- CONFIG --------------------
+PING_INTERVAL = int(os.environ.get("PING_INTERVAL", 25))
 start_pinging = False
 
-# WebSocket URL and Auth Token
-WS_URL = os.environ.get("WS_URL")  
-AUTH_MESSAGE = os.environ.get("AUTH_MESSAGE")  
-PING_INTERVAL = int(os.environ.get("PING_INTERVAL", 25))  # default 25 sec
-
-BOT_TOKEN = os.environ.get("BOT_TOKEN") 
-GROUP_ID = os.environ.get("GROUP_ID")   
-CHANNEL_URL = os.environ.get("CHANNEL_URL")  
-DEV_URL = os.environ.get("DEV_URL")   
-Support = os.environ.get("Support")  
+# Env Variables
+WS_URL = os.environ.get("WS_URL")
+AUTH_MESSAGE = os.environ.get("AUTH_MESSAGE")
+BOT_TOKEN = os.environ.get("BOT_TOKEN")
+GROUP_ID = os.environ.get("GROUP_ID")
+CHANNEL_URL = os.environ.get("CHANNEL_URL")
+DEV_URL = os.environ.get("DEV_URL")
+Support = os.environ.get("Support")
 
 # -------------------- TELEGRAM --------------------
-last_sent_time = 0
-
-def send_to_telegram(text):
-    global last_sent_time
+def send_to_telegram(text, retries=3, delay=5):
     buttons = {
         "inline_keyboard": [
             [
@@ -46,31 +42,26 @@ def send_to_telegram(text):
         "reply_markup": json.dumps(buttons)
     }
 
-    now = time.time()
-    if now - last_sent_time < 1.2:
-        time.sleep(1.2 - (now - last_sent_time))
+    for attempt in range(retries):
+        try:
+            response = requests.post(
+                f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
+                data=payload,
+                timeout=10
+            )
+            if response.status_code == 200:
+                print("✅ Message sent to Telegram")
+                return True
+            else:
+                print(f"⚠️ Telegram Error [{response.status_code}]: {response.text}")
+        except Exception as e:
+            print(f"❌ Telegram Send Failed (Attempt {attempt+1}/{retries}):", e)
+        
+        if attempt < retries - 1:
+            time.sleep(delay)
+    return False
 
-    try:
-        response = requests.post(
-            f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-            data=payload
-        )
-
-        if response.status_code == 429:
-            retry_after = response.json().get("parameters", {}).get("retry_after", 1)
-            print(f"⚠️ Rate limit hit — retrying after {retry_after} sec")
-            time.sleep(retry_after)
-            return send_to_telegram(text)
-
-        if response.status_code != 200:
-            print("⚠️ Telegram Error:", response.text)
-        else:
-            last_sent_time = time.time()
-
-    except Exception as e:
-        print("❌ Telegram Send Failed:", e)
-
-# -------------------- WEBSOCKET FUNCTIONS --------------------
+# -------------------- FUNCTIONS --------------------
 def send_ping(ws):
     global start_pinging
     while ws.keep_running:
@@ -114,17 +105,23 @@ def on_message(ws, message):
                 sms = data[1]
                 raw_msg = sms.get("message", "")
                 originator = sms.get("originator", "Unknown")
-                recipient = sms.get("recipient", "Unknown")
+                recipient = sms.get("recipient", "")
                 country = sms.get("country_iso", "??").upper()
 
                 import re
                 otp_match = re.search(r'\b\d{3}[- ]?\d{3}\b|\b\d{6}\b', raw_msg)
                 otp = otp_match.group(0) if otp_match else "N/A"
 
-                masked_number = recipient[:-4].replace(recipient[:-4], '⁕' * (len(recipient[:-4]))) + recipient[-4:]
-                now = datetime.now().strftime("%H:%M:%S")
-                service = originator  # keeping your naming consistent
+                # Masked number fix
+                if recipient and len(recipient) >= 4:
+                    masked_number = "⁕" * (len(recipient) - 4) + recipient[-4:]
+                else:
+                    masked_number = "Unknown"
 
+                now = datetime.now().strftime("%H:%M:%S")
+                service = "WhatsApp" if "whatsapp" in raw_msg.lower() else "Unknown"
+
+                # New message format
                 telegram_msg = (
                     "🔔 <b><u>Real-Time OTP Alert</u></b>\n"
                     "━━━━━━━━━━━━━━━━━━━━\n"
@@ -138,7 +135,7 @@ def on_message(ws, message):
                     "📝 <b>Full Message:</b>\n"
                     f"<code>{html.escape(raw_msg)}</code>\n"
                     "━━━━━━━━━━━━━━━━━━━━\n"
-                    "📡 <i>Sponser by Hridaym(H2I) Secure OTP Platform</i>"
+                    "📡 <i>Sponsored by Hridaym(H2I) Secure OTP Platform</i>"
                 )
 
                 send_to_telegram(telegram_msg)
