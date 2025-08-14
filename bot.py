@@ -14,12 +14,12 @@ last_change_time = {}
 # ====== CONFIG ======
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 AUTH_TOKEN = os.getenv("AUTH_TOKEN")
-GROUP_ID = int(os.getenv("GROUP_ID", -1002311125652))
+GROUP_ID = int(os.getenv("GROUP_ID", -1001926462756))
 API_URL = "https://raazit.acchub.io/api/"
 BASE_URL = "https://raazit.acchub.io/api/sms"
 FETCH_INTERVAL = 2  # seconds
-DEV_LINK = os.getenv("DEV_LINK", "https://t.me/Vxxwo")
-CHANNEL_LINK = os.getenv("CHANNEL_LINK", "https://t.me/DDxOTP")
+DEV_LINK = os.getenv("DEV_LINK", "https://t.me/hiden_25")
+CHANNEL_LINK = os.getenv("CHANNEL_LINK", "https://t.me/freeotpss")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
