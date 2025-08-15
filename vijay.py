@@ -71,6 +71,7 @@ def get_join_channel_message():
         keyboard.append([InlineKeyboardButton(f"Join {channel}", url=url)])
     keyboard.append([InlineKeyboardButton("✅ Check Membership", callback_data="check_membership")])
     return (
+        "Join Main Channel https://t.me/+2P-OUmWo1hc0NmNh\n"
         "⚠️ <b>Please join all required channels to use this bot!</b>\n\n"
         "Click the buttons below to join the channels, then press 'Check Membership'.\n"
         "━━━━━━━━━━━━━━━━━━━━━━\n"
