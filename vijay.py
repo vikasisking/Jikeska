@@ -20,7 +20,7 @@ FETCH_INTERVAL = 2  # seconds
 ADMIN_ID = int(os.getenv("ADMIN_ID", 7761576669))  # Add admin ID for /hiden_25 command
 DEV_LINK = os.getenv("DEV_LINK", "https://t.me/hiden_5")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK", "https://t.me/+2P-OUmWo1hc0NmNh")
-Support = ps.getenv("Support", "https://t.me/OpxAli")
+Support = os.getenv("Support", "https://t.me/OpxAli")
 # Required channels for force join
 REQUIRED_CHANNELS = [
     "@h2icoder",
