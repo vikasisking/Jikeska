@@ -25,6 +25,7 @@ Support = os.getenv("Support", "https://t.me/OpxAli")
 REQUIRED_CHANNELS = [
     "@BlackHatsssss",
     #"@+2P-OUmWo1hc0NmNh",
+    "@fasttech3",
     "@h2icoder"
 ]
 
