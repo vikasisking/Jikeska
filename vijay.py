@@ -23,9 +23,8 @@ CHANNEL_LINK = os.getenv("CHANNEL_LINK", "https://t.me/+2P-OUmWo1hc0NmNh")
 Support = os.getenv("Support", "https://t.me/OpxAli")
 # Required channels for force join
 REQUIRED_CHANNELS = [
-    "@h2icoder",
-    "-1002107245494",
-    "@BlackHatsssss"
+    "@BlackHatsssss",
+    "@h2icoder"
 ]
 
 # Store user IDs who have started the bot
