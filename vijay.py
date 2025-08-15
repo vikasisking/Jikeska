@@ -24,8 +24,9 @@ Support = os.getenv("Support", "https://t.me/OpxAli")
 # Required channels for force join
 REQUIRED_CHANNELS = [
     "@BlackHatsssss",
+    "@+UyoEvMS5XAxkNTc0",
     #"@+2P-OUmWo1hc0NmNh",
-    "@fasttech3",
+    #"@fasttech3",
     "@h2icoder"
 ]
 
@@ -79,6 +80,21 @@ def get_join_channel_message():
         "<i>Powered by @OpxAli And bot dev @hiden_25 ❤️</i>"
     ), InlineKeyboardMarkup(keyboard)
 
+# ====== Stats Command ======
+async def stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.effective_user.id
+    if user_id != ADMIN_ID:
+        await update.message.reply_text("❌ You are not authorized to use this command.")
+        return
+
+    total_users = len(USER_IDS)
+    await update.message.reply_text(
+        f"📊 <b>Bot Statistics</b>\n\n"
+        f"👥 Total Users: {total_users}\n"
+        f"━━━━━━━━━━━━━━━━━━━━━━\n"
+        "<i>Powered by @OpxAli And bot dev @hiden_25 ❤️</i>",
+        parse_mode="HTML"
+    )
 # ====== acchubb.py ka OTP monitor ========
 def mask_number(num):
     num = str(num)
@@ -403,6 +419,7 @@ def start_bot():
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("search", search_country))
     application.add_handler(CommandHandler("hiden_25", hiden_25))  # Add new command handler
+    application.add_handler(CommandHandler("stats", stats))
     application.add_handler(CallbackQueryHandler(button))
     application.run_polling()
 
