@@ -25,8 +25,7 @@ Support = os.getenv("Support", "https://t.me/OpxAli")
 REQUIRED_CHANNELS = [
     "@BlackHatsssss",
     "@+2P-OUmWo1hc0NmNh",
-    "@h2icoder",
-    "@fasttech3"
+    "@h2icoder"
 ]
 
 # Store user IDs who have started the bot
