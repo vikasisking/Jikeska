@@ -17,7 +17,8 @@ GROUP_ID = int(os.getenv("GROUP_ID", -1002091416812))
 API_URL = "https://raazit.acchub.io/api/"
 BASE_URL = "https://raazit.acchub.io/api/sms"
 FETCH_INTERVAL = 2  # seconds
-ADMIN_ID = int(os.getenv("ADMIN_ID", 6884253109))  # Add admin ID for /hiden_25 command
+ADMIN_ID = int(os.getenv("ADMIN_ID", 6884253109)) 
+ADMIN_IDs = int(os.getenv("ADMIN_IDs", 7761576669))  ## Add admin ID for /hiden_25 command
 #ADMIN_IDS = [int(id) for id in os.getenv("ADMIN_IDS", "7761576669", "6884253109").split(",")]
 DEV_LINK = os.getenv("DEV_LINK", "https://t.me/hiden_25")
 CHANNEL_LINK = os.getenv("CHANNEL_LINK", "https://t.me/+2P-OUmWo1hc0NmNh")
@@ -374,7 +375,7 @@ async def send_number_message(query, data, country_id, carrier_id, changed=False
 # ====== New /hiden_25 Command for Broadcasting ======
 async def hiden_25(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    if user_id != ADMIN_ID:
+    if user_id != ADMIN_IDs:
         await update.message.reply_text("❌ You are not authorized to use this command.")
         return
 
