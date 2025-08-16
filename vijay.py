@@ -30,7 +30,7 @@ REQUIRED_CHANNELS = [
     "@fasttech3",
     "@h2icoder"
 ]
-channel2 = [ "@+F4Md7IotaqcxN2I9" ]
+#channel2 = [ "@+F4Md7IotaqcxN2I9" ]
 # Store user IDs who have started the bot
 USER_IDS = set()
 
@@ -72,7 +72,7 @@ def get_join_channel_message():
         else:
             url = f"https://t.me/c/{channel.replace('-100', '')}"  # For private channels with chat IDs
         keyboard.append([InlineKeyboardButton(f"Join {channel}", url=url)])
-        keyboard.append([InlineKeyboardButton(f"Join {channel2}", url=url)])
+       # keyboard.append([InlineKeyboardButton(f"Join {channel2}", url=url)])
     keyboard.append([InlineKeyboardButton("✅ Check Membership", callback_data="check_membership")])
     return (
         "Join Main Channel https://t.me/+2P-OUmWo1hc0NmNh\n"
