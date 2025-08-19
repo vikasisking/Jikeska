@@ -28,7 +28,7 @@ REQUIRED_CHANNELS = [
     "@BlackHatsssss",
     #"@+UyoEvMS5XAxkNTc0",
     #"@+2P-OUmWo1hc0NmNh",
-    "@fasttech3",
+   # "@fasttech3",
     "@h2icoder",
     "@freeotpss"
 ]
