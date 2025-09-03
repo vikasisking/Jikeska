@@ -26,6 +26,7 @@ Support = os.getenv("Support", "https://t.me/OpxAli")
 # Required channels for force join
 REQUIRED_CHANNELS = [
     "@BlackHatsssss",
+    "@OpxAliThings",
     #"@+UyoEvMS5XAxkNTc0",
     #"@+2P-OUmWo1hc0NmNh",
    # "@fasttech3",
